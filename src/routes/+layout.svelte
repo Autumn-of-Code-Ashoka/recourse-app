@@ -3,23 +3,23 @@
     import "../app.css";
     
     import Header from "./Header.svelte";
-
-    let loading = false;
-
-    beforeNavigate(_ => {
-        loading = true;
-    })
-
-    afterNavigate(_ => {
-        loading = false;
-    })
 </script>
 
 <Header />
-<div class = "mx-auto md:w-2/3 w-[95%]">
-    {#if loading}
-        Loading content...
-    {:else}
+<div id = "layout-grid" class = "py-4 px-8 h-full">
+    <div>
+        <slot name = "left" />
+    </div>
+    <div>
         <slot />
-    {/if}
+    </div>
 </div>
+
+<style>
+    #layout-grid 
+    {
+        display: grid;
+        grid-template-columns: 1fr 2.5fr 1fr;
+        column-gap: 18px;
+    }
+</style>
