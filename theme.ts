@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
     colors: {
         background: "#030E25",
@@ -8,5 +10,5 @@ module.exports = {
     },
     fonts: {
         maven: [`"Maven"`, 'sans-serif'],
-    }
+    },
 } 

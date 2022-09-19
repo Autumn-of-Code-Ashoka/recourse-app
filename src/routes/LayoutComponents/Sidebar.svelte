@@ -12,8 +12,8 @@
     $: unselectedFields = $sidebarState.fields.map((field, i) => ({...field, i})).filter(field => !field.selected);
 </script>
 
-<div bind:clientWidth = {width} class = "2xl:h-[36rem]" />
-<aside class = "bg-secondary 2xl:h-[36rem] rounded-2xl pl-8 pr-2 py-4 2xl:fixed" style:width = {`${width}px`} bind:offsetHeight = {height} class:active = {$sidebarState.open}
+<div bind:clientWidth = {width} class = "xl:h-[36rem]" />
+<aside class = "bg-secondary xl:h-[36rem] rounded-2xl pl-8 pr-2 py-4 xl:fixed" style:width = {`${width}px`} bind:offsetHeight = {height} class:active = {$sidebarState.open}
     style = {`--height: -${height}px`}>
     <h1 class = "text-2xl mb-4">Filters</h1>
     <form on:submit|preventDefault>
@@ -26,15 +26,18 @@
         </div>
         <div class = "">
             {#each selectedFields as field (field.name)}
-                <div class = "mb-4 w-full grid gap-2 place-content-between field" animate:flip = {{duration: 300, easing: cubicInOut}} transition:fly = {{x: -100,duration: 300, easing: cubicInOut}}>
+                <div class = "mb-4 w-full grid gap-2 place-content-between field" animate:flip = {{duration: 300, easing: cubicInOut}} 
+                transition:fly = {{x: -100,duration: 300, easing: cubicInOut}}>
                     <label for = {field.name} class = "">{ field.label }:</label>
                     {#if field.type == "text"}
                         <input name = {field.name} size = {3} type = "text" bind:value = {$sidebarState.fields[field.i].value} list = {field.options ? field.name : undefined} />
                     {:else}
                         <div>
-                            <input name = {field.name} size = {3} type = "number" bind:value = {$sidebarState.fields[field.i].value[0]} min = {field.range?.at(0) ?? 0} max = {$sidebarState.fields[field.i].value[1] } />
+                            <input name = {field.name} size = {3} type = "number" bind:value = {$sidebarState.fields[field.i].value[0]} 
+                            min = {field.range?.at(0) ?? 0} max = {$sidebarState.fields[field.i].value[1] } />
                             to
-                            <input name = {field.name} size = {3} type = "number" bind:value = {$sidebarState.fields[field.i].value[1]} min = {$sidebarState.fields[field.i].value[0]} max = {field.range?.at(1) ?? 5} />
+                            <input name = {field.name} size = {3} type = "number" bind:value = {$sidebarState.fields[field.i].value[1]} 
+                            min = {$sidebarState.fields[field.i].value[0]} max = {field.range?.at(1) ?? 5} />
                         </div>
                     {/if}
                     {#if field.options !== undefined}

@@ -19,7 +19,7 @@
     #layout-grid 
     {
         display: grid;
-        grid-template-columns: 1fr 2fr 1fr;
+        grid-template-columns: 1fr 2fr 0.1fr;
         column-gap: 48px;
     }
 
@@ -28,7 +28,7 @@
         transition: all 0.3s ease-in-out;
     }
 
-    @media only screen and (max-width: 1536px) 
+    @media only screen and (max-width: theme("screens.xl")) 
     {
         #layout-grid 
         {
