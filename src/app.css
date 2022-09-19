@@ -5,7 +5,7 @@
 @font-face
 {
     font-family: "Maven";
-    src: url("mavenpro.ttf") format('truetype');
+    src: url("/mavenpro.ttf") format('truetype');
 }
 
 *

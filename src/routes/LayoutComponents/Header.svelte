@@ -8,9 +8,9 @@
     <div class = "flex flex-col justify-center items-center h-full pt-6 pb-3">
         <a href = "/"><h1 class = "text-4xl font-mono font-medium"><span class = "text-accent-light">re</span>Course</h1></a>
         <nav class = "my-3 flex-row justify-center items-center">
-            <Link href = "/course">Course</Link>
-            <Link href = "/professor">Professor</Link>
-            <Link href = "/review">Review</Link>
+            <Link href = "/course">Courses</Link>
+            <Link href = "/professor">Professors</Link>
+            <Link href = "/review">Reviews</Link>
         </nav>
     </div>
 </header>

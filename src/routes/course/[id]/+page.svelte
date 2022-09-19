@@ -4,6 +4,11 @@
     export let data: PageData
 </script>
 
+
+<svelte:head>
+    <title>Recourse | {data.name} Details</title>
+</svelte:head>
+
 {#await data}
     Loading...
 {:then course} 

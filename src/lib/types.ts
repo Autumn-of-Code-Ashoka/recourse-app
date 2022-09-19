@@ -28,6 +28,7 @@ export type CourseViewResponse = {
         name: string,
         department: string,
         document: string,
+        semester: string,
         html_details: string,
         _v: number,
         reviews: string[],

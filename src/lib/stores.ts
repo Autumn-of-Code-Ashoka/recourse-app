@@ -12,7 +12,10 @@ export const courses = (() =>
         pullAllCompleted: false,
         async pullAll(fetch: (input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>)
         {
-            const resp = await fetch(`${import.meta.env.VITE_API_URL}course`).catch(err => {console.error(err); throw err});
+            const resp = await fetch(`${import.meta.env.VITE_API_URL}course`).catch(err => {
+                console.log(err);
+                throw err;
+            });
             const data = await resp.json().catch(err => {console.error(err); throw err}) as CourseViewResponse;
             this.set(data.data);
             this.pullAllCompleted = true;
@@ -36,6 +39,55 @@ export const courses = (() =>
             if (data.data.length !== 1) throw new Error("Course not found");
             this.update(c => [...c, data.data[0]]);
             return data.data[0];
+        }
+    }
+})();
+
+type SidebarFields = {
+    name: string,
+    type: "text" | "number",
+    label: string,
+    value: string | [number, number],
+    range?: [number, number],
+    options?: {value: string, label: string}[],
+    selected: boolean
+}[];
+
+export const sidebarState = (() => {
+    const _store = writable<{open: boolean, fields: SidebarFields}>({
+        open: false,
+        fields: [],
+    });
+
+    return {
+        subscribe: _store.subscribe,
+        set: _store.set,
+        open(fields: SidebarFields) 
+        {
+            const current = get(this).fields;
+            const newFields = fields.map(field => {
+                const existing = current.find(f => f.name === field.name);
+
+                if (existing)
+                {
+                    return {...field, selected: existing.selected, value: existing.value};
+                }
+
+                return field;
+            });
+            _store.set({open: true, fields: newFields});
+        },
+        close()
+        {
+            _store.update(s => ({...s, open: false}));
+        },
+        toggle(ind: number)
+        {
+            _store.update(s => {
+                const fields = [...s.fields];
+                fields[ind].selected = !fields[ind].selected;
+                return {...s, fields};
+            });
         }
     }
 })();
