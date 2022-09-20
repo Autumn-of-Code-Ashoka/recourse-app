@@ -13,6 +13,11 @@
     box-sizing: border-box;
 }
 
+:root
+{
+    color-scheme: dark;
+}
+
 html, body
 {
     margin: 0;
