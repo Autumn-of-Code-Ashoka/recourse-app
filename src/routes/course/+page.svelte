@@ -81,13 +81,13 @@
     <title>Recourse | Courses</title>
 </svelte:head>
 
-<div class = "mb-8 cursor-pointer grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class = "mb-8 grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6">
 {#if $courses.length === 0}
 Loading data...
 {:else} 
     {#each filteredCourses as course (course._id)}
         <Card href = {`course/${course._id}`}>
-            <h1 slot = "title" class = "text-sm mb-2">{course.name}<br>({course.code.map(code => code.slice(1, -1)).join("/")})</h1>
+            <h1 slot = "title" class = "text-sm mb-2 text-light">{course.name}<br>({course.code.map(code => code.slice(1, -1)).join("/")})</h1>
             <h1 slot = "title-right" class = "text-sm">{course.semester}</h1>
             <div slot = "subtitle" class = "mb-1">
                 <p class = "text-sm">{`By ${CreatePeopleString(course.faculty.professors)}`}</p>
@@ -95,10 +95,20 @@ Loading data...
                     <p class = "text-sm">{`With ${CreatePeopleString(course.faculty.TFs)}`}</p>
                 {/if}
             </div>
-            <p slot = "content" class = "text-sm">
-                Review Count: {course.ratings.sample_size}<br>
-                Overall Score: {course.ratings.compound_score.toPrecision(3)} / 5.0
-            </p>
+            <div slot = "content" class = "text-sm grid grid-cols-2 mt-2">
+                <div>
+                    Review Count:
+                </div>
+                <div class = "text-end">
+                    {course.ratings.sample_size}
+                </div>
+                <div>
+                    Overall Score:
+                </div>
+                <div class = "text-end">
+                    {course.ratings.compound_score.toPrecision(3)} / 5.0
+                </div>
+            </div>
         </Card>
     {/each}
 {/if}

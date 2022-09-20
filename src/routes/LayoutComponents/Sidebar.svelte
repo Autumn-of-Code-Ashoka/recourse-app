@@ -15,11 +15,11 @@
 <div bind:clientWidth = {width} class = "xl:h-[36rem]" />
 <aside class = "bg-secondary xl:h-[36rem] rounded-2xl pl-8 pr-2 py-4 xl:fixed" style:width = {`${width}px`} bind:offsetHeight = {height} class:active = {$sidebarState.open}
     style = {`--height: -${height}px`}>
-    <h1 class = "text-2xl mb-4">Filters</h1>
+    <h1 class = "text-2xl mb-4 text-light">Filters</h1>
     <form on:submit|preventDefault>
         <div class = "w-full flex flex-row flex-wrap gap-x-2 gap-y-1 mb-4 select-none">
             {#each unselectedFields as field (field.name)}
-                <button class = "px-3 py-1 rounded-xl bg-background" on:click= {() => {sidebarState.toggle(field.i)}} animate:flip = {{duration: 300, easing: cubicInOut}}>
+                <button class = "px-3 py-1 rounded-xl text-light bg-background" on:click= {() => {sidebarState.toggle(field.i)}} animate:flip = {{duration: 300, easing: cubicInOut}}>
                     { field.label }
                 </button>
             {/each}
@@ -34,10 +34,10 @@
                     {:else}
                         <div>
                             <input name = {field.name} size = {3} type = "number" bind:value = {$sidebarState.fields[field.i].value[0]} 
-                            min = {field.range?.at(0) ?? 0} max = {$sidebarState.fields[field.i].value[1] } />
+                            min = {field.range?.at(0) ?? 0} max = {field.value[1]} />
                             to
                             <input name = {field.name} size = {3} type = "number" bind:value = {$sidebarState.fields[field.i].value[1]} 
-                            min = {$sidebarState.fields[field.i].value[0]} max = {field.range?.at(1) ?? 5} />
+                            min = {field.value[0]} max = {field.range?.at(1) ?? 5} step = {field.step ?? 1}/>
                         </div>
                     {/if}
                     {#if field.options !== undefined}
@@ -48,7 +48,7 @@
                         </datalist>
                     {/if}
                     <div class = "flex justify-end pr-4">
-                        <div class = "w-7 cursor-pointer text-red-200 hover:scale-125 transition-transform" on:click = {() => {sidebarState.toggle(field.i)}}>
+                        <div class = "w-7 cursor-pointer text-red-200 hover:scale-125 transition-transform" on:click = {(e) => {sidebarState.toggle(field.i); e.currentTarget.setAttribute("disabled", true)}}>
                             <IoMdRemoveCircle />
                         </div>
                     </div>

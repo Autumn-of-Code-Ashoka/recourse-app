@@ -17,7 +17,7 @@ export const courses = (() =>
                 throw err;
             });
             const data = await resp.json().catch(err => {console.error(err); throw err}) as CourseViewResponse;
-            this.set(data.data);
+            this.set(data.data.sort((a, b) => b.ratings.compound_score - a.ratings.compound_score));
             this.pullAllCompleted = true;
         },
         async pullOne(fetch: (input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>, id: string)
@@ -49,6 +49,7 @@ type SidebarFields = {
     label: string,
     value: string | [number, number],
     range?: [number, number],
+    step?: number,
     options?: {value: string, label: string}[],
     selected: boolean
 }[];

@@ -6,7 +6,7 @@
     $: active = $page.url.pathname.includes(href);
 </script>
 
-<span class = "mx-4 text-xl relative" class:active>
+<span class = "mx-4 text-xl text-light relative" class:active>
     <a {href} data-sveltekit-prefetch><slot /></a>
 </span>
 

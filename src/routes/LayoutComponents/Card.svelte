@@ -6,13 +6,13 @@
     <div class = "">
         <slot name = "title" />
     </div>
-    <div class = "">
+    <div class = "text-end">
         <slot name = "title-right" />
     </div>
     <div class = "col-span-2">
         <slot name = "subtitle" />
     </div>
-    <div class = "col-span-2">
+    <div class = "col-span-2 w-full">
         <slot name = "content" />
     </div>
 </a>
@@ -23,6 +23,6 @@
     {
         display: grid;
         grid-template-columns: 2fr 1fr;
-        grid-auto-flow: row;
+        align-items: start;
     }
 </style>
