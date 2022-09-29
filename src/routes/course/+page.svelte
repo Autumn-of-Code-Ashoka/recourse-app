@@ -5,7 +5,6 @@
     import { flip } from "svelte/animate";
     import { fly } from "svelte/transition";
     import Card from "../LayoutComponents/Card.svelte";
-    import { _ } from "$env/static/private";
     import { cubicInOut } from "svelte/easing";
 
     let itemsPerPage = 84;
