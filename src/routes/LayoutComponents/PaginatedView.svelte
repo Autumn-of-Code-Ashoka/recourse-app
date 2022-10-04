@@ -7,7 +7,7 @@
     export let elements: any[];
     export let page: number;
     export let perPage: number;
-    export let component: SvelteComponent;
+    export let component: typeof SvelteComponent;
 
     $: pageCount = Math.ceil(elements.length / perPage);
     $: pageElements = elements.slice(page * perPage, (page + 1) * perPage);
