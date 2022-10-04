@@ -92,3 +92,8 @@ export const sidebarState = (() => {
         }
     }
 })();
+
+type CurrentPage = {courses: number, faculty: number, reviews: number}
+
+export const currentPageStore = writable<CurrentPage>({courses: 0, faculty: 0, reviews: 0});
+export const itemsPerPage = 84;

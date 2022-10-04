@@ -1,24 +1,12 @@
 <script lang="ts">
-    import { courses, sidebarState } from "$lib/stores";
+    import { courses, currentPageStore, sidebarState } from "$lib/stores";
+    import { itemsPerPage } from "$lib/stores";
 	import { onMount } from "svelte";
     import type { CourseViewResponse, Faculty } from "$lib/types";
-    import { flip } from "svelte/animate";
-    import { fly } from "svelte/transition";
-    import Card from "../LayoutComponents/Card.svelte";
-    import { cubicInOut } from "svelte/easing";
+    import PaginatedView from "../LayoutComponents/PaginatedView.svelte";
+    import CourseCard from "./CourseCard.svelte";
 
-    let itemsPerPage = 84;
     let page = 0;
-
-    function CreatePeopleString(people: Faculty[], trunc = 2)
-    {
-        if (people.length === 1) return people[0].name;
-        if (people.length === 0) return "Unknown";
-
-        const names = people.map(person => person.name);
-        const truncated = names.length > trunc;
-        return truncated ? `${names.slice(0, trunc).join(", ")}, and others...` : `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
-    }
 
     $: {
         const semesters = new Array(...new Set($courses.map(course => course.semester))).map(sem => ({value: sem, label: sem}));
@@ -76,8 +64,7 @@
         }
     }));
     
-    $: pageCount = Math.ceil(filteredCourses.length / itemsPerPage);
-    $: pageCourses = filteredCourses.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
+    $: pageCourses = filteredCourses.slice();
     onMount(() => {
         return () => sidebarState.close();
     });
@@ -91,47 +78,6 @@
     {#if $courses.length === 0}
     Loading data...
     {:else} 
-        <div class = "md:col-span-3 2xl:col-span-4 justify-center flex gap-2 flex-wrap">
-            {#each new Array(pageCount) as _, i (i)}
-                <button class = "px-4 py-2 rounded-xl bg-secondary hover:bg-indigo-700 transition-colors" class:bg-indigo-700 = {page === i} on:click = {() => page = i}
-                    transition:fly|local = {{duration: 200, easing: cubicInOut, y: -100}} animate:flip = {{duration: 400, easing: cubicInOut}}>
-                    {i + 1}
-                </button>
-            {/each}
-        </div>
-        {#each pageCourses as course (course._id)}
-                <Card href = {`course/${course._id}`}>
-                    <h1 slot = "title" class = "text-sm mb-2 text-light">{course.name}<br>({course.code.map(code => code.slice(1, -1)).join("/")})</h1>
-                    <h1 slot = "title-right" class = "text-sm">{course.semester}</h1>
-                    <div slot = "subtitle" class = "mb-1">
-                        <p class = "text-sm">{`By ${CreatePeopleString(course.faculty.professors)}`}</p>
-                        {#if course.faculty.TFs.length > 0}
-                            <p class = "text-sm">{`With ${CreatePeopleString(course.faculty.TFs)}`}</p>
-                        {/if}
-                    </div>
-                    <div slot = "content" class = "text-sm grid grid-cols-2 mt-2">
-                        <div>
-                            Review Count:
-                        </div>
-                        <div class = "text-end">
-                            {course.ratings.sample_size}
-                        </div>
-                        <div>
-                            Overall Score:
-                        </div>
-                        <div class = "text-end">
-                            {course.ratings.compound_score.toPrecision(3)} / 5.0
-                        </div>
-                    </div>
-                </Card>
-        {/each}
-        <div class = "md:col-span-3 2xl:col-span-4 justify-center flex gap-2 flex-wrap">
-            {#each new Array(pageCount) as _, i (i)}
-                <button class = "px-4 py-2 rounded-xl bg-secondary hover:bg-indigo-700 transition-colors" class:bg-indigo-700 = {page === i} on:click = {() => page = i}
-                    transition:fly|local = {{duration: 200, easing: cubicInOut, y: -100}} animate:flip = {{duration: 400, easing: cubicInOut}}>
-                    {i + 1}
-                </button>
-            {/each}
-        </div>
+        <PaginatedView elements = {pageCourses} bind:page = {$currentPageStore.courses} component = {CourseCard} perPage = {itemsPerPage}/>
     {/if}
 </div>
