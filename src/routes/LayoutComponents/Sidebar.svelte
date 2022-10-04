@@ -8,8 +8,11 @@
     let width: number;
     let height: number;
 
-    $: selectedFields = $sidebarState.fields.map((field, i) => ({...field, i})).filter(field => field.selected);
-    $: unselectedFields = $sidebarState.fields.map((field, i) => ({...field, i})).filter(field => !field.selected);
+    $: thisPage = $sidebarState.page;
+
+    $: selectedFields = $sidebarState.fields[thisPage].map((field, i) => ({...field, i})).filter(field => field.selected);
+    $: console.log($sidebarState.fields);
+    $: unselectedFields = $sidebarState.fields[thisPage].map((field, i) => ({...field, i})).filter(field => !field.selected);
 </script>
 
 <div bind:clientWidth = {width} class = "xl:h-[36rem]" />
@@ -19,7 +22,7 @@
     <form on:submit|preventDefault>
         <div class = "w-full flex flex-row flex-wrap gap-x-2 gap-y-1 mb-4 select-none">
             {#each unselectedFields as field (field.name)}
-                <button class = "px-3 py-1 rounded-xl text-light bg-background" on:click= {() => {sidebarState.toggle(field.i)}} animate:flip = {{duration: 300, easing: cubicInOut}}>
+                <button class = "px-3 py-1 rounded-xl text-light bg-background" on:click= {() => {sidebarState.toggle(thisPage, field.i)}} animate:flip = {{duration: 300, easing: cubicInOut}}>
                     { field.label }
                 </button>
             {/each}
@@ -30,13 +33,13 @@
                 transition:fly = {{x: -100,duration: 300, easing: cubicInOut}}>
                     <label for = {field.name} class = "">{ field.label }:</label>
                     {#if field.type == "text"}
-                        <input name = {field.name} size = {3} type = "text" bind:value = {$sidebarState.fields[field.i].value} list = {field.options ? field.name : undefined} />
+                        <input name = {field.name} size = {3} type = "text" bind:value = {$sidebarState.fields[thisPage][field.i].value} list = {field.options ? field.name : undefined} />
                     {:else}
                         <div>
-                            <input name = {field.name} size = {3} type = "number" bind:value = {$sidebarState.fields[field.i].value[0]} 
+                            <input name = {field.name} size = {3} type = "number" bind:value = {$sidebarState.fields[thisPage][field.i].value[0]} 
                             min = {field.range?.at(0) ?? 0} max = {field.value[1]} />
                             to
-                            <input name = {field.name} size = {3} type = "number" bind:value = {$sidebarState.fields[field.i].value[1]} 
+                            <input name = {field.name} size = {3} type = "number" bind:value = {$sidebarState.fields[thisPage][field.i].value[1]} 
                             min = {field.value[0]} max = {field.range?.at(1) ?? 5} step = {field.step ?? 1}/>
                         </div>
                     {/if}
@@ -48,7 +51,7 @@
                         </datalist>
                     {/if}
                     <div class = "flex justify-end pr-4">
-                        <div class = "w-7 cursor-pointer text-red-200 hover:scale-125 transition-transform" on:click = {(e) => {sidebarState.toggle(field.i); e.currentTarget.setAttribute("disabled", true)}}>
+                        <div class = "w-7 cursor-pointer text-red-200 hover:scale-125 transition-transform" on:click = {(e) => {sidebarState.toggle(thisPage, field.i); e.currentTarget.setAttribute("disabled", true)}}>
                             <IoMdRemoveCircle />
                         </div>
                     </div>

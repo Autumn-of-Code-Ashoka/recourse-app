@@ -6,14 +6,12 @@
     import PaginatedView from "../LayoutComponents/PaginatedView.svelte";
     import CourseCard from "./CourseCard.svelte";
 
-    let page = 0;
-
     $: {
         const semesters = new Array(...new Set($courses.map(course => course.semester))).map(sem => ({value: sem, label: sem}));
         const codes = new Array(...new Set($courses.map(course => course.code[0]))).map(code => ({value: code, label: code}));
         const departments = new Array(...new Set($courses.map(course => course.department))).map(dept => ({value: dept, label: dept}));
 
-        sidebarState.open([
+        sidebarState.open("courses", [
             {name: "code", label: "Code", type: "text", selected: false, value: "", options: codes},
             {name: "name", label: "Name", type: "text", selected: false, value: ""},
             {name: "faculty", label: "Faculty", type: "text", selected: false, value: ""},
@@ -31,7 +29,7 @@
         ]);
     };
     
-    $: filters = $sidebarState.fields.filter(field => field.selected);
+    $: filters = ($sidebarState.fields.courses ?? []).filter(field => field.selected);
     $: filteredCourses = $courses.filter(course => filters.every(filter => {
         if (filter.type === "text")
         {

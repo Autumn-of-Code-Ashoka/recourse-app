@@ -43,6 +43,8 @@ export const courses = (() =>
     }
 })();
 
+type QueryPages = "courses" | "professors" | "reviews";
+
 type SidebarFields = {
     name: string,
     type: "text" | "number",
@@ -55,39 +57,30 @@ type SidebarFields = {
 }[];
 
 export const sidebarState = (() => {
-    const _store = writable<{open: boolean, fields: SidebarFields}>({
+    const _store = writable<{open: boolean, page: QueryPages, fields: {[key: string]: SidebarFields}}>({
         open: false,
-        fields: [],
+        page: "courses",
+        fields: {courses: [], professors: [], reviews: []},
     });
 
     return {
         subscribe: _store.subscribe,
         set: _store.set,
-        open(fields: SidebarFields) 
+        open(page: QueryPages, fields: SidebarFields) 
         {
             const current = get(this).fields;
-            const newFields = fields.map(field => {
-                const existing = current.find(f => f.name === field.name);
-
-                if (existing)
-                {
-                    return {...field, selected: existing.selected, value: existing.value};
-                }
-
-                return field;
-            });
-            _store.set({open: true, fields: newFields});
+            _store.set({open: true, page, fields: current[page].length > 0 ? current : {...current, [page]: fields}});
         },
         close()
         {
             _store.update(s => ({...s, open: false}));
         },
-        toggle(ind: number)
+        toggle(page: QueryPages, ind: number)
         {
             _store.update(s => {
-                const fields = [...s.fields];
+                const fields = s.fields[page];
                 fields[ind].selected = !fields[ind].selected;
-                return {...s, fields};
+                return {...s, fields: {...s.fields, page: fields}};
             });
         }
     }
