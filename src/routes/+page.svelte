@@ -1,5 +1,5 @@
-<svelte:head>
-    <title>Recourse | Home</title>
-</svelte:head>
+<script>
+    import { goto } from "$app/navigation";
 
-Welcome to the recourse app
+    goto("/course");
+</script>
