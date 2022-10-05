@@ -1,3 +1,4 @@
+import type { SvelteComponent } from "svelte";
 import { get, writable } from "svelte/store";
 import type { CourseViewResponse } from "./types";
 
@@ -32,7 +33,6 @@ export const courses = (() =>
             if (cacheSearch) return cacheSearch;
             
             const query = `${import.meta.env.VITE_API_URL}course?${new URLSearchParams({id})}`;
-            console.log(query);
             const resp = await fetch(query).catch(err => {console.error(err); throw err});
             const data = await resp.json().catch(err => {console.error(err); throw err}) as CourseViewResponse;
 
@@ -57,7 +57,7 @@ type SidebarFields = {
 }[];
 
 export const sidebarState = (() => {
-    const _store = writable<{open: boolean, page: QueryPages, fields: {[key: string]: SidebarFields}}>({
+    const _store = writable<{open: boolean, page: QueryPages, component?: typeof SvelteComponent, props?: any, fields: {[key: string]: SidebarFields}}>({
         open: false,
         page: "courses",
         fields: {courses: [], professors: [], reviews: []},
@@ -69,11 +69,15 @@ export const sidebarState = (() => {
         open(page: QueryPages, fields: SidebarFields) 
         {
             const current = get(this).fields;
-            _store.set({open: true, page, fields: current[page].length > 0 ? current : {...current, [page]: fields}});
+            _store.set({open: true, page, fields: {...current, [page]: fields}, component: undefined, props: undefined});
+        },
+        openComponent(component: typeof SvelteComponent, props: any)
+        {
+            _store.update(s => ({...s, open: true, component, props}));
         },
         close()
         {
-            _store.update(s => ({...s, open: false}));
+            _store.update(s => ({...s, open: false, component: undefined, props: undefined}));
         },
         toggle(page: QueryPages, ind: number)
         {

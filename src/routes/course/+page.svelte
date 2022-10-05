@@ -11,7 +11,7 @@
         const semesters = new Array(...new Set($courses.map(course => course.semester))).map(sem => ({value: sem, label: sem}));
         const codes = new Array(...new Set($courses.map(course => course.code[0]))).map(code => ({value: code, label: code}));
         const departments = new Array(...new Set($courses.map(course => course.department))).map(dept => ({value: dept, label: dept}));
-
+        
         sidebarState.open("courses", [
             {name: "code", label: "Code", type: "text", selected: false, value: "", options: codes},
             {name: "name", label: "Name", type: "text", selected: false, value: ""},

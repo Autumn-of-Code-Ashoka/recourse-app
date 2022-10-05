@@ -8,9 +8,10 @@
     div div
     {
         background: linear-gradient(to bottom right, theme("colors.accent-heavy"), theme("colors.accent-light"));
+        filter: brightness(0.7);
         background-size: 200% 200%;
-        width: 30px;
-        height: 30px;
+        width: 20px;
+        height: 20px;
         border-radius: 50%;
         animation: bounce 0.9s ease-in-out infinite calc(var(--i) * 0.15s);
     }

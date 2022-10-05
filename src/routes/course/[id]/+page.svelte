@@ -1,8 +1,12 @@
 <script lang="ts">
+    import { sidebarState } from "$lib/stores";
+    import LoadingAnimation from "../../LoadingAnimation.svelte";
 	import type { PageData } from "./$types";
+    import CourseSidebar from "./CourseSidebar.svelte";
 
     export let data: PageData
-    
+
+    sidebarState.openComponent(CourseSidebar, { "course": data });
 </script>
 
 
@@ -11,7 +15,7 @@
 </svelte:head>
 
 {#await data}
-    Loading...
+    <LoadingAnimation />
 {:then course} 
     <div id = "container">
         <h1 class = "text-2xl text-light">{course.name}</h1>
