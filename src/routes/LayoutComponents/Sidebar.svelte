@@ -11,7 +11,6 @@
     $: thisPage = $sidebarState.page;
 
     $: selectedFields = $sidebarState.fields[thisPage].map((field, i) => ({...field, i})).filter(field => field.selected);
-    $: console.log($sidebarState.fields);
     $: unselectedFields = $sidebarState.fields[thisPage].map((field, i) => ({...field, i})).filter(field => !field.selected);
 </script>
 

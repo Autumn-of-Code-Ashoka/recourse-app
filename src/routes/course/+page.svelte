@@ -5,6 +5,7 @@
     import type { CourseViewResponse, Faculty } from "$lib/types";
     import PaginatedView from "../LayoutComponents/PaginatedView.svelte";
     import CourseCard from "./CourseCard.svelte";
+    import LoadingAnimation from "../LoadingAnimation.svelte";
 
     $: {
         const semesters = new Array(...new Set($courses.map(course => course.semester))).map(sem => ({value: sem, label: sem}));
@@ -73,9 +74,10 @@
 </svelte:head>
 
 <div class = "mb-8 grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 gap-6">
-    {#if $courses.length === 0}
-    Loading data...
+    <!-- {#if $courses.length === 0}
+        <LoadingAnimation />
     {:else} 
         <PaginatedView elements = {pageCourses} bind:page = {$currentPageStore.courses} component = {CourseCard} perPage = {itemsPerPage}/>
-    {/if}
+    {/if} -->
+    <LoadingAnimation />
 </div>
