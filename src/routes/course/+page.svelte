@@ -74,10 +74,9 @@
 </svelte:head>
 
 <div class = "mb-8 grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 gap-6">
-    <!-- {#if $courses.length === 0}
+    {#if $courses.length === 0}
         <LoadingAnimation />
     {:else} 
         <PaginatedView elements = {pageCourses} bind:page = {$currentPageStore.courses} component = {CourseCard} perPage = {itemsPerPage}/>
-    {/if} -->
-    <LoadingAnimation />
+    {/if}
 </div>
