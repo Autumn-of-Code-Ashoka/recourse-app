@@ -1,18 +1,9 @@
 <script lang="ts">
     import Card from "../LayoutComponents/Card.svelte";
     import type { CourseViewResponse, Faculty } from "$lib/types";
+    import { CreatePeopleString } from "$lib/types";
 
     export let item: CourseViewResponse["data"][0];
-
-    function CreatePeopleString(people: Faculty[], trunc = 2)
-    {
-        if (people.length === 1) return people[0].name;
-        if (people.length === 0) return "Unknown";
-
-        const names = people.map(person => person.name);
-        const truncated = names.length > trunc;
-        return truncated ? `${names.slice(0, trunc).join(", ")}, and others...` : `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
-    }
 </script>
 
 <Card href = {`course/${item._id}`}>

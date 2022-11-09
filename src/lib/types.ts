@@ -4,6 +4,16 @@ export type Faculty = {
     _id: string;
 };
 
+export function CreatePeopleString(people: Faculty[], trunc = 2)
+{
+    if (people.length === 1) return people[0].name;
+    if (people.length === 0) return "Unknown";
+
+    const names = people.map(person => person.name);
+    const truncated = names.length > trunc;
+    return truncated ? `${names.slice(0, trunc).join(", ")}, and others...` : `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
+}
+
 export type RatingAggregate = {
     sample_size: number,
     engaging: number,

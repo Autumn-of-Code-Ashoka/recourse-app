@@ -33,9 +33,13 @@
     <div id = "container">
         <h1 class = "text-2xl text-light">{course.name}</h1>
         <button on:click = {BrowseSem}><h1 class = "text-xl text-end grid">{course.semester}</h1></button>
-        <div class = "col-span-2 my-4" id = "course-details-html">
-            {@html course.html_details}
-        </div>
+        {#if course.html_details.trim() !== ""}
+            <div class = "col-span-2 my-4" id = "course-details-html">
+                {@html course.html_details}
+            </div>
+        {:else}
+            <div class = "col-span-2 my-4">No course overview available</div>
+        {/if}
     </div>
 {/await}
 
