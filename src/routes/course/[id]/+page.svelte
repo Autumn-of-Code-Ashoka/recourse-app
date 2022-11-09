@@ -56,4 +56,17 @@
     {
         text-decoration: underline;
     }
+
+    :global(#course-details-html table)
+    {
+        width: 100% !important;
+        margin-top: 4px;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    :global(#course-details-html td)
+    {
+        border-color: theme("colors.text") !important;
+    }
 </style>
