@@ -1,10 +1,23 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import { sidebarState } from "$lib/stores";
     import LoadingAnimation from "../../LoadingAnimation.svelte";
 	import type { PageData } from "./$types";
     import CourseSidebar from "./CourseSidebar.svelte";
 
     export let data: PageData
+
+    function BrowseSem()
+    {
+        const index = $sidebarState.fields.courses.findIndex(field => field.name === "semester");
+
+        if (index !== -1)
+        {
+            $sidebarState.fields.courses[index].selected = true;
+            $sidebarState.fields.courses[index].value = data.semester;
+            goto("/course");
+        }
+    }
 
     sidebarState.openComponent(CourseSidebar, { "course": data });
 </script>
@@ -19,7 +32,7 @@
 {:then course} 
     <div id = "container">
         <h1 class = "text-2xl text-light">{course.name}</h1>
-        <h1 class = "text-xl text-end grid">{course.semester}</h1>
+        <button on:click = {BrowseSem}><h1 class = "text-xl text-end grid">{course.semester}</h1></button>
         <div class = "col-span-2 my-4" id = "course-details-html">
             {@html course.html_details}
         </div>

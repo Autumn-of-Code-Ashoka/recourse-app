@@ -29,8 +29,8 @@
             </div>
             <div class = "">
                 {#each selectedFields as field (field.name)}
-                    <div class = "mb-4 w-full grid gap-2 place-content-between field" animate:flip = {{duration: 300, easing: cubicInOut}} 
-                    transition:fly = {{x: -100,duration: 300, easing: cubicInOut}}>
+                    <div class = "mb-4 w-full grid gap-2 place-content-between field" animate:flip|local = {{duration: 300, easing: cubicInOut}} 
+                    transition:fly|local = {{x: -100,duration: 300, easing: cubicInOut}}>
                         <label for = {field.name} class = "">{ field.label }:</label>
                         {#if field.type == "text"}
                             <input name = {field.name} size = {3} type = "text" bind:value = {$sidebarState.fields[thisPage][field.i].value} list = {field.options ? field.name : undefined} />

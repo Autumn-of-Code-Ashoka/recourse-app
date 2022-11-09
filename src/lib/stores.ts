@@ -45,6 +45,27 @@ export const courses = (() =>
 
 type QueryPages = "courses" | "professors" | "reviews";
 
+const defaultFields: {[key in QueryPages]: SidebarFields} = {
+    courses: [
+        {name: "code", label: "Code", type: "text", selected: false, value: "", options: []},
+        {name: "name", label: "Name", type: "text", selected: false, value: ""},
+        {name: "faculty", label: "Faculty", type: "text", selected: false, value: ""},
+        {name: "semester", label: "Semester", type: "text", selected: false, value: "", options: []},
+        {name: "department", label: "Department", type: "text", selected: false, value: "", options: []},
+        {name: "sample_size", label: "Review Count", type: "number", selected: false, value: [1, 1000], range: [0, 1000]},
+        {name: "engaging", label: "Engaging Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "interesting_material", label: "Material Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "grading", label: "Grading Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "workload", label: "Workload Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "attendance", label: "Attendance Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "TFs", label: "TA/TF Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "holistic", label: "Holistic Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "compound_score", label: "Compound Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+    ],
+    professors: [],
+    reviews: []
+}
+
 type SidebarFields = {
     name: string,
     type: "text" | "number",
@@ -57,10 +78,10 @@ type SidebarFields = {
 }[];
 
 export const sidebarState = (() => {
-    const _store = writable<{open: boolean, page: QueryPages, component?: typeof SvelteComponent, props?: any, fields: {[key: string]: SidebarFields}}>({
+    const _store = writable<{open: boolean, page: QueryPages, component?: typeof SvelteComponent, props?: any, fields: {[key in QueryPages]: SidebarFields}}>({
         open: false,
         page: "courses",
-        fields: {courses: [], professors: [], reviews: []},
+        fields: defaultFields,
     });
 
     return {

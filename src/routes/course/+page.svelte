@@ -12,22 +12,22 @@
         const codes = new Array(...new Set($courses.map(course => course.code[0]))).map(code => ({value: code, label: code}));
         const departments = new Array(...new Set($courses.map(course => course.department))).map(dept => ({value: dept, label: dept}));
         
-        sidebarState.open("courses", [
-            {name: "code", label: "Code", type: "text", selected: false, value: "", options: codes},
-            {name: "name", label: "Name", type: "text", selected: false, value: ""},
-            {name: "faculty", label: "Faculty", type: "text", selected: false, value: ""},
-            {name: "semester", label: "Semester", type: "text", selected: false, value: "", options: semesters},
-            {name: "department", label: "Department", type: "text", selected: false, value: "", options: departments},
-            {name: "sample_size", label: "Review Count", type: "number", selected: false, value: [1, 1000], range: [0, 1000]},
-            {name: "engaging", label: "Engaging Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
-            {name: "interesting_material", label: "Material Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
-            {name: "grading", label: "Grading Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
-            {name: "workload", label: "Workload Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
-            {name: "attendance", label: "Attendance Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
-            {name: "TFs", label: "TA/TF Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
-            {name: "holistic", label: "Holistic Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
-            {name: "compound_score", label: "Compound Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
-        ]);
+        sidebarState.open("courses", $sidebarState.fields.courses.map(field => {
+            switch(field.name)
+            {
+                case "semester":
+                    return {...field, options: semesters};
+                    break;
+                case "code":
+                    return {...field, options: codes};
+                break;
+                case "department":
+                    return {...field, options: departments};
+                break;
+            }
+
+            return field;
+        }));
     };
     
     $: filters = ($sidebarState.fields.courses ?? []).filter(field => field.selected);
