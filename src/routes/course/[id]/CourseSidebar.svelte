@@ -47,7 +47,7 @@
 
 <div class = "pr-5">
     <div class = "flex flex-row justify-between items-baseline">
-        <button on:click = {BrowseDept}><h1 class = "text-2xl text-light">{course.department ?? "Unknown"} Department</h1></button>
+        <button on:click = {BrowseDept} class = "text-start"><h1 class = "text-2xl text-light">{course.department ?? "Unknown"} Department</h1></button>
         <h1 class = "text-xl text-end">{course.code.join(", ")}</h1>
     </div>
     <div class = "mt-4">
