@@ -62,12 +62,12 @@
             {#each SplitProfs() as prof}
                 <button on:click = {() => BrowseProf(prof[0])} class = "text-light no-underline hover:underline">{prof[0]}{prof[1] ? "" : ", "}</button>
             {/each}
-            
+
+            <div>            
             {#if course.faculty.TFs.length > 0}
-                <div>
                     With TAs: <span class = "text-light">{course.faculty.TFs.map(tf => tf.name).join(", ")}</span>
-                </div>
             {/if}
+            </div>
 
             Review Count: <span class = "text-light">{course.ratings.sample_size}</span>
         </div> 
