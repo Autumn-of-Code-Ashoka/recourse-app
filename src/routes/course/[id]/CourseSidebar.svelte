@@ -5,6 +5,13 @@
     import IoIosAttach from 'svelte-icons/io/IoIosAttach.svelte'
 
     export let course: CourseViewResponse["data"][0];
+    
+    function Capitalise(s: string)
+    {
+        const words = s.split(" ");
+        const capitalisedWords = words.map(word => word[0].toUpperCase() + word.slice(1));
+        return capitalisedWords.join(" ");
+    }
 
     function SplitProfs() : [string, boolean][]
     {
@@ -14,7 +21,6 @@
 
     function BrowseProf(prof: string)
     {
-        console.log("hi");
         const index = $sidebarState.fields.courses.findIndex(field => field.name === "faculty");
         
         // TODO: This should probably go to the faculty view instead of the course view
@@ -30,7 +36,6 @@
     function BrowseDept()
     {
         const index = $sidebarState.fields.courses.findIndex(field => field.name === "department");
-
         if (index !== -1)
         {
             $sidebarState.fields.courses[index].selected = true;
@@ -52,7 +57,7 @@
                 Course Document
             </a>
         {/if}
-        <div>
+        <div class = "mb-4">
             Offered by 
             {#each SplitProfs() as prof}
                 <button on:click = {() => BrowseProf(prof[0])} class = "text-light no-underline hover:underline">{prof[0]}{prof[1] ? "" : ", "}</button>
@@ -63,6 +68,16 @@
                     With TAs: <span class = "text-light">{course.faculty.TFs.map(tf => tf.name).join(", ")}</span>
                 </div>
             {/if}
+
+            Review Count: <span class = "text-light">{course.ratings.sample_size}</span>
+        </div> 
+        <div class = "grid grid-cols-2">
+            <h2 class = "text-2xl text-light col-span-2">Ratings</h2>
+            <!-- TODO: Convert this to a star system with a mask -->
+            {#each Object.keys(course.ratings).slice(1) as rating}
+                <div class = "text-lg">{Capitalise(rating.replaceAll("_", " "))}</div>
+                <div class = "text-lg text-end text-light">{course.ratings[rating].toPrecision(3)}</div>
+            {/each}
         </div>
     </div>
 </div>
