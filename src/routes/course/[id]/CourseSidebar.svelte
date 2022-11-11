@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { sidebarState } from "$lib/stores";
-    import type { CourseViewResponse, Faculty } from "$lib/types";
+    import type { CourseViewResponse, RatingAggregate } from "$lib/types";
     import IoIosAttach from 'svelte-icons/io/IoIosAttach.svelte'
 
     export let course: CourseViewResponse["data"][0];
@@ -72,11 +72,11 @@
             Review Count: <span class = "text-light">{course.ratings.sample_size}</span>
         </div> 
         <div class = "grid grid-cols-2">
-            <h2 class = "text-2xl text-light col-span-2">Ratings</h2>
+            <h2 class = "text-2xl text-light col-span-2 mb-2">Ratings</h2>
             <!-- TODO: Convert this to a star system with a mask -->
             {#each Object.keys(course.ratings).slice(1) as rating}
-                <div class = "text-lg">{Capitalise(rating.replaceAll("_", " "))}</div>
-                <div class = "text-lg text-end text-light">{course.ratings[rating].toPrecision(3)}</div>
+                <div class = "text-md">{Capitalise(rating.replaceAll("_", " "))}</div>
+                <div class = "text-md text-end text-light">{course.ratings[rating].toPrecision(3)} / 5</div>
             {/each}
         </div>
     </div>

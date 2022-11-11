@@ -15,6 +15,7 @@ export function CreatePeopleString(people: Faculty[], trunc = 2)
 }
 
 export type RatingAggregate = {
+    [x: string]: number,
     sample_size: number,
     engaging: number,
     interesting_material: number,

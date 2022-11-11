@@ -3,6 +3,7 @@
     import { sidebarState } from "$lib/stores";
     import LoadingAnimation from "../../LoadingAnimation.svelte";
 	import type { PageData } from "./$types";
+    import CourseReviews from "./CourseReviews.svelte";
     import CourseSidebar from "./CourseSidebar.svelte";
 
     export let data: PageData
@@ -30,7 +31,7 @@
 {#await data}
     <LoadingAnimation />
 {:then course} 
-    <div id = "container">
+    <div id = "container" class = "mb-48 relative">
         <h1 class = "text-2xl text-light">{course.name}</h1>
         <button on:click = {BrowseSem}><h1 class = "text-xl text-end grid">{course.semester}</h1></button>
         {#if course.html_details.trim() !== ""}
@@ -41,6 +42,7 @@
             <div class = "col-span-2 my-4">No course overview available</div>
         {/if}
     </div>
+    <CourseReviews class = "w-8/12 h-48 bg-secondary fixed px-4 right-6 bottom-0 rounded-t-xl" />
 {/await}
 
 <style>
