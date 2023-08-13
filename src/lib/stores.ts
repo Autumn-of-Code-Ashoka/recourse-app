@@ -1,6 +1,6 @@
 import type { SvelteComponent } from "svelte";
 import { get, writable } from "svelte/store";
-import type { CourseViewResponse } from "./types";
+import type { CourseViewResponse, ProfViewResponse, ReviewViewResponse } from "./types";
 
 export const courses = (() => 
 {
@@ -43,16 +43,98 @@ export const courses = (() =>
     }
 })();
 
-type QueryPages = "courses" | "professors" | "reviews";
+export const profs = (() => 
+{
+    const _store = writable<ProfViewResponse["data"]>([]);
+    
+    return {
+        subscribe: _store.subscribe,
+        set: _store.set,
+        update: _store.update,
+        pullAllCompleted: false,
+        async pullAll(fetch: (input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>)
+        {
+            const resp = await fetch(`${import.meta.env.VITE_API_URL}prof`).catch(err => {
+                console.log(err);
+                throw err;
+            });
+            const data = await resp.json().catch(err => {console.error(err); throw err}) as ProfViewResponse;
+            this.set(data.data.sort((a, b) => b.ratings.compound_score - a.ratings.compound_score));
+            this.pullAllCompleted = true;
+        },
+        async pullOne(fetch: (input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>, id: string)
+        {
+            if (!/^[0-9a-fA-F]{24}$/.test(id))
+            {
+                throw new Error("Prof not found");
+            }
+
+            const cacheSearch = get(this).find(prof => prof._id === id);
+
+            if (cacheSearch) return cacheSearch;
+            
+            const query = `${import.meta.env.VITE_API_URL}prof?${new URLSearchParams({id})}`;
+            const resp = await fetch(query).catch(err => {console.error(err); throw err});
+            const data = await resp.json().catch(err => {console.error(err); throw err}) as ProfViewResponse;
+
+            if (data.data.length !== 1) throw new Error("Prof not found");
+            this.update(c => [...c, data.data[0]]);
+            return data.data[0];
+        }
+    }
+})();
+
+export const reviews = (() => 
+{
+    const _store = writable<ReviewViewResponse["data"]>([]);
+    
+    return {
+        subscribe: _store.subscribe,
+        set: _store.set,
+        update: _store.update,
+        pullAllCompleted: false,
+        async pullAll(fetch: (input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>)
+        {
+            const resp = await fetch(`${import.meta.env.VITE_API_URL}review`).catch(err => {
+                console.log(err);
+                throw err;
+            });
+            const data = await resp.json().catch(err => {console.error(err); throw err}) as ReviewViewResponse;
+            this.set(data.data.sort((a, b) => b.ratings.compound_score - a.ratings.compound_score));
+            this.pullAllCompleted = true;
+        },
+        async pullOne(fetch: (input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>, id: string)
+        {
+            if (!/^[0-9a-fA-F]{24}$/.test(id))
+            {
+                throw new Error("Review not found");
+            }
+
+            const cacheSearch = get(this).find(review => review._id === id);
+
+            if (cacheSearch) return cacheSearch;
+            
+            const query = `${import.meta.env.VITE_API_URL}review?${new URLSearchParams({id})}`;
+            const resp = await fetch(query).catch(err => {console.error(err); throw err});
+            const data = await resp.json().catch(err => {console.error(err); throw err}) as ReviewViewResponse;
+
+            if (data.data.length !== 1) throw new Error("Review not found");
+            this.update(c => [...c, data.data[0]]);
+            return data.data[0];
+        }
+    }
+})();
+
+type QueryPages = "courses" | "profs" | "reviews";
 
 const defaultFields: {[key in QueryPages]: SidebarFields} = {
     courses: [
-        {name: "code", label: "Code", type: "text", selected: false, value: "", options: []},
-        {name: "name", label: "Name", type: "text", selected: false, value: ""},
+        {name: "code", label: "Course Code", type: "text", selected: false, value: "", options: []},
+        {name: "name", label: "Course Name", type: "text", selected: false, value: ""},
         {name: "faculty", label: "Faculty", type: "text", selected: false, value: ""},
         {name: "semester", label: "Semester", type: "text", selected: false, value: "", options: []},
         {name: "department", label: "Department", type: "text", selected: false, value: "", options: []},
-        {name: "sample_size", label: "Review Count", type: "number", selected: false, value: [1, 1000], range: [0, 1000]},
+        {name: "sample_size", label: "Review Count", type: "number", selected: false, value: [1, 100], range: [0, 100]},
         {name: "engaging", label: "Engaging Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
         {name: "interesting_material", label: "Material Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
         {name: "grading", label: "Grading Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
@@ -62,8 +144,33 @@ const defaultFields: {[key in QueryPages]: SidebarFields} = {
         {name: "holistic", label: "Holistic Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
         {name: "compound_score", label: "Compound Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
     ],
-    professors: [],
-    reviews: []
+    profs: [
+        {name: "name", label: "Name", type: "text", selected: false, value: ""},
+        {name: "position", label: "Position", type: "text", selected: false, value: ""},
+        {name: "qualification", label: "Qualification", type: "text", selected: false, value: ""},
+        {name: "department", label: "Department", type: "text", selected: false, value: "", options: []},
+        {name: "sample_size", label: "Review Count", type: "number", selected: false, value: [1, 100], range: [0, 100]},
+        {name: "engaging", label: "Engaging Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "interesting_material", label: "Material Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "grading", label: "Grading Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "workload", label: "Workload Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "attendance", label: "Attendance Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "TFs", label: "TA/TF Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "holistic", label: "Holistic Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "compound_score", label: "Compound Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+    ],
+    reviews: [
+        {name: "review", label: "Text", type: "text", selected: false, value: ""},
+        {name: "code", label: "Course Code", type: "text", selected: false, value: "", options: []},
+        {name: "semester", label: "Semester", type: "text", selected: false, value: "", options: []},
+        {name: "engaging", label: "Engaging Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "interesting_material", label: "Material Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "grading", label: "Grading Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "workload", label: "Workload Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "attendance", label: "Attendance Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "TFs", label: "TA/TF Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "holistic", label: "Holistic Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},
+        {name: "compound_score", label: "Compound Rating", type: "number", selected: false, value: [0, 5], range: [0, 5]},],
 }
 
 type SidebarFields = {
@@ -80,7 +187,7 @@ type SidebarFields = {
 export const sidebarState = (() => {
     const _store = writable<{open: boolean, page: QueryPages, component?: typeof SvelteComponent, props?: any, fields: {[key in QueryPages]: SidebarFields}}>({
         open: false,
-        page: "courses",
+        page: "profs",
         fields: defaultFields,
     });
 
@@ -111,7 +218,7 @@ export const sidebarState = (() => {
     }
 })();
 
-type CurrentPage = {courses: number, faculty: number, reviews: number}
+type CurrentPage = {courses: number, profs: number, reviews: number}
 
-export const currentPageStore = writable<CurrentPage>({courses: 0, faculty: 0, reviews: 0});
+export const currentPageStore = writable<CurrentPage>({courses: 0, profs: 0, reviews: 0});
 export const itemsPerPage = 84;

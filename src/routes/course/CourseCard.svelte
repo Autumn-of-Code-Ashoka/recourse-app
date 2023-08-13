@@ -26,7 +26,7 @@
             Overall Score:
         </div>
         <div class = "text-end">
-            {item.ratings.compound_score.toPrecision(3)} / 5.0
+            {item.ratings.holistic.toPrecision(3)} / 5.0
         </div>
     </div>
 </Card>

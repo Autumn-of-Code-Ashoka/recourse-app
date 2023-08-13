@@ -3,7 +3,7 @@
 </script>
 
 <div class = "{$$props.class}">
-Course reviews here
+Prof reviews here
 </div>
 
 <style>

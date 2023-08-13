@@ -45,3 +45,34 @@ export type CourseViewResponse = {
         reviews: string[],
     }[];
 };
+
+export type ProfViewResponse = {
+    data: {
+        ratings: RatingAggregate,
+        _id: string,
+        name: string,
+        position: string,
+        qualification: string,
+        email: string,
+        profile_link: string,
+        profile_image: string,
+        link: string,
+        image: string,
+        department: string,
+        courses_offered: string[],
+        reviews: string[],
+    }[];
+};
+
+export type ReviewViewResponse = {
+    data: {
+        ratings: RatingAggregate,
+        _id: string,
+        course_id: string,
+        timestamp: string,
+        code: string[],
+        semester: string,
+        review: string,
+        verified: boolean,
+    }[];
+};

@@ -3,24 +3,24 @@
     import { sidebarState } from "$lib/stores";
     import LoadingAnimation from "../../LoadingAnimation.svelte";
 	import type { PageData } from "./$types";
-    import CourseReviews from "./CourseReviews.svelte";
-    import CourseSidebar from "./CourseSidebar.svelte";
+    import ProfReviews from "./ProfReviews.svelte";
+    import ProfSidebar from "./ProfSidebar.svelte";
 
     export let data: PageData
 
-    function BrowseSem()
+    function BrowseDept()
     {
-        const index = $sidebarState.fields.courses.findIndex(field => field.name === "semester");
+        const index = $sidebarState.fields.profs.findIndex(field => field.name === "department");
 
         if (index !== -1)
         {
-            $sidebarState.fields.courses[index].selected = true;
-            $sidebarState.fields.courses[index].value = data.semester;
-            goto("/course");
+            $sidebarState.fields.profs[index].selected = true;
+            $sidebarState.fields.profs[index].value = data.department;
+            goto("/prof");
         }
     }
 
-    sidebarState.openComponent(CourseSidebar, { "course": data });
+    sidebarState.openComponent(ProfSidebar, { "prof": data });
 </script>
 
 
@@ -30,19 +30,19 @@
 
 {#await data}
     <LoadingAnimation />
-{:then course} 
+{:then prof} 
     <div id = "container" class = "mb-10 relative">
-        <h1 class = "text-2xl text-light">{course.name}</h1>
-        <button on:click = {BrowseSem}><h1 class = "text-xl text-end grid">{course.semester}</h1></button>
-        {#if course.html_details.trim() !== ""}
-            <div class = "col-span-2 my-4" id = "course-details-html">
-                {@html course.html_details}
+        <h1 class = "text-2xl text-light">{prof.name}</h1>
+        <button on:click = {BrowseDept}><h1 class = "text-xl text-end grid">{prof.department}</h1></button>
+        {#if prof.html_details.trim() !== ""}
+            <div class = "col-span-2 my-4" id = "prof-position">
+                {prof.html_details}
             </div>
         {:else}
-            <div class = "col-span-2 my-4">No course overview available</div>
+            <div class = "col-span-2 my-4">Prof descriptions coming soon!</div>
         {/if}
     </div>
-    <CourseReviews class = "bg-secondary relative px-4 right-6 bottom-0 rounded-t-xl" />
+    <ProfReviews class = "bg-secondary relative px-4 right-6 bottom-0 rounded-t-xl" />
 {/await}
 
 <style>
