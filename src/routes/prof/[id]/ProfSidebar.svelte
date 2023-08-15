@@ -43,25 +43,25 @@
     </div>
     <div class = "mt-4">
         <div class = "mb-4">
-            Offeres
+            Offers
             {#each prof.courses_offered as course}
-                <button on:click = {() => BrowseCourse(course[0])} class = "text-light no-underline hover:underline">{course[0]}{course[1] ? "" : ", "}</button>
-            {/each}
-
-            <div>            
-            {#if course.faculty.TFs.length > 0}
+                <button on:click = {() => BrowseCourse(course)} class = "text-light no-underline hover:underline">{course}</button>
+                
+                <!-- <div>            
+                    {#if course.faculty.TFs.length > 0}
                     With TAs: <span class = "text-light">{course.faculty.TFs.map(tf => tf.name).join(", ")}</span>
-            {/if}
-            </div>
-
-            Review Count: <span class = "text-light">{course.ratings.sample_size}</span>
+                    {/if}
+                </div>
+                
+                Review Count: <span class = "text-light">{course.ratings.sample_size}</span> -->
+            {/each}
         </div> 
         <div class = "grid grid-cols-2">
             <h2 class = "text-2xl text-light col-span-2 mb-2">Ratings</h2>
             <!-- TODO: Convert this to a star system with a mask -->
-            {#each Object.keys(course.ratings).slice(1) as rating}
+            {#each Object.keys(prof.ratings).slice(1) as rating}
                 <div class = "text-md">{Capitalise(rating.replaceAll("_", " "))}</div>
-                <div class = "text-md text-end text-light">{course.ratings[rating].toPrecision(3)} / 5</div>
+                <div class = "text-md text-end text-light">{prof.ratings[rating].toPrecision(3)} / 5</div>
             {/each}
         </div>
     </div>

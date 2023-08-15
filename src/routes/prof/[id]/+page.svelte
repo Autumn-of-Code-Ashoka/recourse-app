@@ -5,8 +5,8 @@
 	import type { PageData } from "./$types";
     import ProfReviews from "./ProfReviews.svelte";
     import ProfSidebar from "./ProfSidebar.svelte";
-
-    export let data: PageData
+    
+    export let data: PageData;
 
     function BrowseDept()
     {
@@ -34,9 +34,9 @@
     <div id = "container" class = "mb-10 relative">
         <h1 class = "text-2xl text-light">{prof.name}</h1>
         <button on:click = {BrowseDept}><h1 class = "text-xl text-end grid">{prof.department}</h1></button>
-        {#if prof.html_details.trim() !== ""}
+        {#if prof?.html_details?.trim()}
             <div class = "col-span-2 my-4" id = "prof-position">
-                {prof.html_details}
+                {prof?.html_details}
             </div>
         {:else}
             <div class = "col-span-2 my-4">Prof descriptions coming soon!</div>
