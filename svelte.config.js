@@ -8,7 +8,9 @@ const config = {
 	preprocess: preprocess({ postcss: true }),
 
 	kit: {
-		adapter: adapter(),
+		adapter: adapter({
+			fallback: "index.html"
+		}),
 		files: {
 			lib: 'src/lib',
 		}
