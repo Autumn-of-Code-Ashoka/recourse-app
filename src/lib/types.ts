@@ -14,6 +14,13 @@ export function CreatePeopleString(people: Faculty[], trunc = 2)
     return truncated ? `${names.slice(0, trunc).join(", ")}, and others...` : `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
 }
 
+export type ViewResponse = {
+    data: Array<{
+        _id: string,
+        ratings: RatingAggregate,
+    }>
+}
+
 export type RatingAggregate = {
     [x: string]: number,
     sample_size: number,

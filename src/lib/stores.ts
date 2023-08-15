@@ -1,11 +1,11 @@
 import type { SvelteComponent } from "svelte";
 import { get, writable } from "svelte/store";
-import type { CourseViewResponse, ProfViewResponse, ReviewViewResponse } from "./types";
+import type { ViewResponse, CourseViewResponse, ProfViewResponse, ReviewViewResponse } from "./types";
 
-export const courses = (() => 
-{
-    const _store = writable<CourseViewResponse["data"]>([]);
-    
+function generate_datastore<T extends ViewResponse>(endpoint: string) {
+    const _store = writable<T["data"]>([]);
+    let name = endpoint.slice(0, 1).toUpperCase() + endpoint.slice(1, -1);
+
     return {
         subscribe: _store.subscribe,
         set: _store.set,
@@ -13,11 +13,11 @@ export const courses = (() =>
         pullAllCompleted: false,
         async pullAll(fetch: (input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>)
         {
-            const resp = await fetch(`${import.meta.env.VITE_API_URL}course`).catch(err => {
+            const resp = await fetch(`${import.meta.env.VITE_API_URL}${endpoint}`).catch(err => {
                 console.log(err);
                 throw err;
             });
-            const data = await resp.json().catch(err => {console.error(err); throw err}) as CourseViewResponse;
+            const data = await resp.json().catch(err => {console.error(err); throw err}) as T;
             this.set(data.data.sort((a, b) => b.ratings.compound_score - a.ratings.compound_score));
             this.pullAllCompleted = true;
         },
@@ -25,105 +25,26 @@ export const courses = (() =>
         {
             if (!/^[0-9a-fA-F]{24}$/.test(id))
             {
-                throw new Error("Course not found");
+                throw new Error(`${name} not found`);
             }
 
-            const cacheSearch = get(this).find(course => course._id === id);
+            const cacheSearch = get(this).find(item => item._id === id);
 
             if (cacheSearch) return cacheSearch;
             
-            const query = `${import.meta.env.VITE_API_URL}course?${new URLSearchParams({id})}`;
+            const query = `${import.meta.env.VITE_API_URL}${endpoint}?${new URLSearchParams({id})}`;
             const resp = await fetch(query).catch(err => {console.error(err); throw err});
-            const data = await resp.json().catch(err => {console.error(err); throw err}) as CourseViewResponse;
+            const data = await resp.json().catch(err => {console.error(err); throw err}) as T;
 
-            if (data.data.length !== 1) throw new Error("Course not found");
+            if (data.data.length !== 1) throw new Error(`${name} not found`);
             this.update(c => [...c, data.data[0]]);
             return data.data[0];
         }
     }
-})();
+}
 
-export const profs = (() => 
-{
-    const _store = writable<ProfViewResponse["data"]>([]);
-    
-    return {
-        subscribe: _store.subscribe,
-        set: _store.set,
-        update: _store.update,
-        pullAllCompleted: false,
-        async pullAll(fetch: (input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>)
-        {
-            const resp = await fetch(`${import.meta.env.VITE_API_URL}prof`).catch(err => {
-                console.log(err);
-                throw err;
-            });
-            const data = await resp.json().catch(err => {console.error(err); throw err}) as ProfViewResponse;
-            this.set(data.data.sort((a, b) => b.ratings.compound_score - a.ratings.compound_score));
-            this.pullAllCompleted = true;
-        },
-        async pullOne(fetch: (input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>, id: string)
-        {
-            if (!/^[0-9a-fA-F]{24}$/.test(id))
-            {
-                throw new Error("Prof not found");
-            }
-
-            const cacheSearch = get(this).find(prof => prof._id === id);
-
-            if (cacheSearch) return cacheSearch;
-            
-            const query = `${import.meta.env.VITE_API_URL}prof?${new URLSearchParams({id})}`;
-            const resp = await fetch(query).catch(err => {console.error(err); throw err});
-            const data = await resp.json().catch(err => {console.error(err); throw err}) as ProfViewResponse;
-
-            if (data.data.length !== 1) throw new Error("Prof not found");
-            this.update(c => [...c, data.data[0]]);
-            return data.data[0];
-        }
-    }
-})();
-
-export const reviews = (() => 
-{
-    const _store = writable<ReviewViewResponse["data"]>([]);
-    
-    return {
-        subscribe: _store.subscribe,
-        set: _store.set,
-        update: _store.update,
-        pullAllCompleted: false,
-        async pullAll(fetch: (input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>)
-        {
-            const resp = await fetch(`${import.meta.env.VITE_API_URL}review`).catch(err => {
-                console.log(err);
-                throw err;
-            });
-            const data = await resp.json().catch(err => {console.error(err); throw err}) as ReviewViewResponse;
-            this.set(data.data.sort((a, b) => b.ratings.compound_score - a.ratings.compound_score));
-            this.pullAllCompleted = true;
-        },
-        async pullOne(fetch: (input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>, id: string)
-        {
-            if (!/^[0-9a-fA-F]{24}$/.test(id))
-            {
-                throw new Error("Review not found");
-            }
-
-            const cacheSearch = get(this).find(review => review._id === id);
-
-            if (cacheSearch) return cacheSearch;
-            
-            const query = `${import.meta.env.VITE_API_URL}review?${new URLSearchParams({id})}`;
-            const resp = await fetch(query).catch(err => {console.error(err); throw err});
-            const data = await resp.json().catch(err => {console.error(err); throw err}) as ReviewViewResponse;
-
-            if (data.data.length !== 1) throw new Error("Review not found");
-            this.update(c => [...c, data.data[0]]);
-            return data.data[0];
-        }
-    }
-})();
+export const [courses, profs, reviews] = [generate_datastore<CourseViewResponse>("course"), generate_datastore<ProfViewResponse>("prof"), 
+    generate_datastore<ReviewViewResponse>("review")];
 
 type QueryPages = "courses" | "profs" | "reviews";
 
