@@ -2,6 +2,11 @@ import type { SvelteComponent } from "svelte";
 import { get, writable } from "svelte/store";
 import type { ViewResponse, CourseViewResponse, ProfViewResponse, ReviewViewResponse } from "./types";
 
+/**
+ * Generates the stores which cache/store/request data from the api's views. Look at usage below for better understanding.
+ * @param endpoint Which endpoint the store should be generated for ("course", "prof", or "review")
+ * @returns 
+ */
 function generate_datastore<T extends ViewResponse>(endpoint: string) {
     const _store = writable<T["data"]>([]);
     let name = endpoint.slice(0, 1).toUpperCase() + endpoint.slice(1, -1);
@@ -48,6 +53,9 @@ export const [courses, profs, reviews] = [generate_datastore<CourseViewResponse>
 
 type QueryPages = "courses" | "profs" | "reviews";
 
+/**
+ * Sets up the default values for each of the sidebar filter fields on each of the views
+ */
 const defaultFields: {[key in QueryPages]: SidebarFields} = {
     courses: [
         {name: "code", label: "Course Code", type: "text", selected: false, value: "", options: []},
@@ -105,6 +113,10 @@ type SidebarFields = {
     selected: boolean
 }[];
 
+/**
+ * Store which manages the current state of the sidebar, from it being open, displaying the filters window (or some arbitrary component), to 
+ * remembering the values of each field/filter per view.
+ */
 export const sidebarState = (() => {
     const _store = writable<{open: boolean, page: QueryPages, component?: typeof SvelteComponent, props?: any, fields: {[key in QueryPages]: SidebarFields}}>({
         open: false,
@@ -138,6 +150,8 @@ export const sidebarState = (() => {
         }
     }
 })();
+
+// Used for pagination (not on the api-side, purely frontend):
 
 type CurrentPage = {courses: number, profs: number, reviews: number}
 

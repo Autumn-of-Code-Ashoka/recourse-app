@@ -4,6 +4,12 @@ export type Faculty = {
     _id: string;
 };
 
+/**
+ * 
+ * @param people A list of faculty
+ * @param trunc Number of people to display before string is truncated
+ * @returns A beautified/truncated string representation of the list of faculty
+ */
 export function CreatePeopleString(people: Faculty[], trunc = 2)
 {
     if (people.length === 1) return people[0].name;
@@ -14,6 +20,9 @@ export function CreatePeopleString(people: Faculty[], trunc = 2)
     return truncated ? `${names.slice(0, trunc).join(", ")}, and others...` : `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`;
 }
 
+/**  
+ * A generic type for the response received from the recourse-api
+ */
 export type ViewResponse = {
     data: Array<{
         _id: string,
@@ -21,7 +30,11 @@ export type ViewResponse = {
     }>
 }
 
+/**
+ * Rating response schema
+ */
 export type RatingAggregate = {
+    // supports arbitrary (string, number) pairs, beyond the ones provided
     [x: string]: number,
     sample_size: number,
     engaging: number,
@@ -33,6 +46,8 @@ export type RatingAggregate = {
     holistic: number,
     compound_score: number,
 };
+
+// Specific schemas for the recourse-api responses:
 
 export type CourseViewResponse = {
     data: {
